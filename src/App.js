@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import Storage from "./Storage";
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  state = {};
+  componentDidMount = async () => {
+    const token = await Storage.load("react-token");
+    const tokenParsed = await Storage.load("react-token-parsed");
+    const refreshToken = await Storage.load("react-refresh-token");
+    this.setState({ token, tokenParsed, refreshToken });
+    JSON.stringify(console.log(tokenParsed));
+  };
+
+  logout = () => {
+    this.props.keycloak.logout();
+  };
+
+  render() {
+    const { tokenParsed } = this.state;
+    return (
+      <div className="App">
+        <header className="App-header">
+          <div style={{ margin: 10 }}>Benvenuto {tokenParsed && tokenParsed.name}</div>
+          <div style={{ margin: 10 }}>La tua email è {tokenParsed && tokenParsed.email}</div>
+          <div onClick={this.logout} style={{ margin: 10 }}>
+            Logout
+          </div>
+        </header>
+      </div>
+    );
+  }
 }
-
-export default App;
