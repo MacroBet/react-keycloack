@@ -5,7 +5,12 @@ class Storage {
 
   async load(key, defaultValue = undefined) {
     const data = await localStorage.getItem(key);
-    return data ? JSON.parse(data) : defaultValue;
+    try {
+      const res = JSON.parse(data);
+      return res;
+    } catch (e) {
+      return defaultValue;
+    }
   }
 
   async remove(key) {
